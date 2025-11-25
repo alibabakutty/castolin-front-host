@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AiFillExclamationCircle, AiOutlineArrowLeft } from 'react-icons/ai';
+import { AiFillDelete, AiFillExclamationCircle, AiOutlineArrowLeft } from 'react-icons/ai';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
@@ -472,13 +472,6 @@ const Order = ({ onBack }) => {
     }),
   };
 
-  // Format for display - show as whole number
-  const formatQuantityForDisplay = quantity => {
-    const num = Number(quantity) || 0;
-    // Remove any decimal places for display
-    return Math.floor(num).toString();
-  };
-
   return (
     <div className="p-3 bg-[#E9EFEC] border-2 h-screen font-amasis">
       <div className="px-1 py-2 grid  grid-cols-[auto_1fr_1fr_0.8fr_2fr_1.2fr_1.2fr] gap-2 items-center border transition-all">
@@ -673,7 +666,15 @@ const Order = ({ onBack }) => {
             <Select
               ref={itemSelectRef}
               className="text-sm peer"
-              value={item ? {item_code: item.item_code, item_name: item.stock_item_name, label: item.item_code} : null}
+              value={
+                item
+                  ? {
+                      item_code: item.item_code,
+                      item_name: item.stock_item_name,
+                      label: item.item_code,
+                    }
+                  : null
+              }
               options={itemOptions.map(item => ({
                 ...item,
                 label: `${item.item_code} - ${item.stock_item_name}`,
@@ -824,13 +825,13 @@ const Order = ({ onBack }) => {
                 <th className="font-medium text-sm border border-gray-300 py-0.5 w-10 text-center">
                   S.No
                 </th>
-                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 w-28">
+                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 w-24">
                   Product Code
                 </th>
                 <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 w-[400px] text-center">
                   Product Name
                 </th>
-                <th className="font-medium text-sm border border-gray-300 py-0.5 text-center w-20">
+                <th className="font-medium text-sm border border-gray-300 py-0.5 text-center w-16">
                   HSN
                 </th>
                 <th className="font-medium text-sm border border-gray-300 py-0.5 px-1 w-14 text-center">
@@ -840,19 +841,13 @@ const Order = ({ onBack }) => {
                   Qty
                 </th>
                 <th className="font-medium text-sm border border-gray-300 py-0.5 w-10">UOM</th>
-                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-[85px]">
+                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-center w-[85px]">
                   Rate
                 </th>
                 <th className="font-medium text-sm border border-gray-300 py-0.5 w-[86px]">
                   Amount
                 </th>
-                <th className="font-medium text-sm border border-gray-300 py-0.5 pr-1 w-[94px]">
-                  Net Amount
-                </th>
-                <th className="font-medium border text-sm border-gray-300 py-0.5 text-center w-[105px]">
-                  Gross Amount
-                </th>
-                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-center w-[76px]">
+                <th className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-center w-[60px]">
                   Action
                 </th>
               </tr>
@@ -875,20 +870,22 @@ const Order = ({ onBack }) => {
                 ) : (
                   orderData.map((item, index) => (
                     <tr key={index} className="leading-12">
-                      <td className="border border-gray-400 text-center text-sm w-[43.5px]">
+                      <td className="border border-gray-400 text-center text-sm w-[54px]">
                         {index + 1}
                       </td>
-                      <td className="border border-gray-400 text-left pl-1 text-sm w-[122px]">
+                      <td className="border border-gray-400 text-left pl-1 text-sm w-[132px]">
                         {item.itemCode}
                       </td>
-                      <td className="border border-gray-400 px-2 text-sm w-[437px]">
+                      <td className="border border-gray-400 px-2 text-sm w-[548px]">
                         {item.itemName}
                       </td>
-                      <td className="border border-gray-400 text-center text-sm w-[87px]">{item.hsn}</td>
-                      <td className="border border-gray-400 text-center text-sm w-[62px]">
+                      <td className="border border-gray-400 text-center text-sm w-[88px]">
+                        {item.hsn}
+                      </td>
+                      <td className="border border-gray-400 text-center text-sm w-[76px]">
                         {item.gst}
                       </td>
-                      <td className="border border-gray-400 px-2 text-right text-sm bg-[#F8F4EC] w-[52px]">
+                      <td className="border border-gray-400 px-2 text-right text-sm bg-[#F8F4EC] w-[66px]">
                         <input
                           type="text"
                           value={item.itemQty === 0 ? '' : item.itemQty}
@@ -901,30 +898,24 @@ const Order = ({ onBack }) => {
                               handleQuantityChange(index, '1');
                             }
                           }}
-                          className="w-[20px] text-right border-none outline-none bg-transparent px-1"
+                          className="w-[47px] text-right border-none outline-none bg-transparent px-1"
                         />
                       </td>
-                      <td className="border border-gray-400 text-center text-sm w-[44px]">
+                      <td className="border border-gray-400 text-center text-sm w-[55px]">
                         {item.uom}
                       </td>
-                      <td className="border border-gray-400  px-2 text-right text-sm w-[93px]">
+                      <td className="border border-gray-400  px-2 text-right text-sm w-[116px]">
                         {formatCurrency(item.rate)}
                       </td>
-                      <td className="border border-gray-400 px-2 text-right text-sm w-[94px]">
+                      <td className="border border-gray-400 px-2 text-right text-sm w-[118px]">
                         {formatCurrency(item.amount)}
-                      </td>
-                      <td className="border border-gray-400 px-2 text-right text-sm w-[102px]">
-                        {formatCurrency(item.netRate)}
-                      </td>
-                      <td className="border border-gray-400 px-2 text-right text-sm w-[115px]">
-                        {formatCurrency(item.grossAmount)}
                       </td>
                       <td className="border border-gray-400 text-center text-sm">
                         <button
                           onClick={() => handleRemoveItem(index)}
-                          className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                          className="text-red-500 hover:text-red-600 p-1"
                         >
-                          Remove
+                          <AiFillDelete size={18} />
                         </button>
                       </td>
                     </tr>
@@ -963,20 +954,18 @@ const Order = ({ onBack }) => {
               </div>
             </div>
           </div>
-          <div>
+          <div className='ml-48'>
             <p className="font-medium pr-2 mb-0.5">Total</p>
           </div>
-          <div className="w-[550px] px-0.5 py-1">
+          <div className="w-[350px] px-0.5 py-1">
             <table className="w-full border-b mb-1">
               <tfoot>
                 <tr className="*:border-[#932F67]">
                   <td className="text-right border w-16 px-1">
-                    {formatQuantityForDisplay(totals.qty)}
+                    {totals.qty}
                   </td>
                   <td className="w-32 border"></td>
                   <td className="text-right border w-28 px-1">{formatCurrency(totals.amount)}</td>
-                  <td className="text-right border w-24 px-1"></td>
-                  <td className="text-right border w-28 px-1">{formatCurrency(totals.grossAmt)}</td>
                 </tr>
               </tfoot>
             </table>
