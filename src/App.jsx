@@ -148,7 +148,7 @@ function App() {
         } />
         {/* Corporate order report */}
         <Route path='/order-report-corporate/:orderNumber' element={
-          <ProtectedRoutes roles={['admin', 'corporate']}>
+          <ProtectedRoutes roles={['admin', 'direct']}>
             <OrderReportPage />
           </ProtectedRoutes>
         } />

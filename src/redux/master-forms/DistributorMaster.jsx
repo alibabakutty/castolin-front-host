@@ -6,10 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { setModeDistributorData, updateFieldDistributorData } from '../slices/distributorSlice';
 import { fetchDistributorByUsercode } from '../thunks/distributorThunks';
-import handleDistributorSubmit from '../submit/handleDistributorSubmit';
 import api from '../../services/api';
 import { useAuth } from '../../context/ContextProvider';
-// import { signupDistributor } from '../../auth/auth';
 
 const DistributorMaster = () => {
   const { distributorData, mode } = useSelector(state => state.distributorData);

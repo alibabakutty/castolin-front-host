@@ -60,7 +60,7 @@ const CDAPage = ({ onBack, moduleType }) => {
       viewPage: '/fetch-view-master/distributor',
       alterPage: '/fetch-alter-master/distributor',
     },
-    corporate: {
+    direct: {
       title: 'Direct Order Management',
       description: 'Manage system direct order accounts',
       createText: 'Create Direct Order',
@@ -70,7 +70,7 @@ const CDAPage = ({ onBack, moduleType }) => {
       viewDescription: 'Browse and search direct order profiles',
       alterDescription: 'Modify direct order informations',
       createPage: '/corporate-master',
-      viewPage: '/fetch-view-master/corporate',
+      viewPage: '/fetch-view-master/direct',
       alterPage: '/corporate-alter'
     },
   };
@@ -79,12 +79,12 @@ const CDAPage = ({ onBack, moduleType }) => {
   const currentModule = moduleConfig[moduleType] || moduleConfig.distributor;
 
   // check if current module is distributor management
-  const isDistributorModule = moduleType === 'corporate' || moduleType === 'distributor';
+  const isDistributorModule = moduleType === 'direct' || moduleType === 'distributor';
 
-  const handleCreate = () => {
-    console.log(`Create ${moduleType} clicked`);
-    navigate(currentModule.createPage);
-  };
+  // const handleCreate = () => {
+  //   console.log(`Create ${moduleType} clicked`);
+  //   navigate(currentModule.createPage);
+  // };
 
   const handleView = () => {
     console.log(`View ${moduleType} clicked`);

@@ -110,7 +110,7 @@ const AdminDashboard = () => {
       ),
       color: 'purple'
     },
-    corporate: {
+    direct: {
       title: 'Direct Order Management',
       description: 'Manage direct order accounts',
       icon: (
@@ -274,17 +274,17 @@ const AdminDashboard = () => {
           </div>
         </button>
 
-        {/* Corporate Management Button */}
+        {/* Direct Order Management Button */}
         <button
-          onClick={() => handleModuleClick('corporate')}
+          onClick={() => handleModuleClick('direct')}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 group w-full"
         >
           <div className="text-center">
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors ${colorClasses[modules.corporate.color]}`}>
-              {modules.corporate.icon}
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors ${colorClasses[modules.direct.color]}`}>
+              {modules.direct.icon}
             </div>
-            <h3 className="text-xl font-medium text-gray-700 mb-2">{modules.corporate.title}</h3>
-            <p className="text-gray-600">{modules.corporate.description}</p>
+            <h3 className="text-xl font-medium text-gray-700 mb-2">{modules.direct.title}</h3>
+            <p className="text-gray-600">{modules.direct.description}</p>
           </div>
         </button>
 

@@ -196,6 +196,18 @@ const Order = ({ onBack }) => {
     toast.info('Item added successfully!', {
       position: 'bottom-right',
       autoClose: 3000,
+      style: {
+        width: '380px',
+        minHeight: '20px',
+        fontSize: '12px',
+        padding: '10px',
+        borderRadius: '8px',
+        backgroundColor: '#f0f9ff',
+        color: '#0369a1',
+      },
+      progressStyle: {
+        background: 'linear-gradient(to right, #0369a1, #7dd3fc)',
+      },
     });
 
     setItem('');
@@ -247,7 +259,14 @@ const Order = ({ onBack }) => {
   };
 
   const handleDeliveryDateChange = selectedDate => {
-    if (selectedDate < date) {
+    setDeliveryDate(selectedDate);
+  };
+
+  // Add onBlur handler for validation
+  const handleDeliveryDateBlur = e => {
+    const selectedDate = e.target.value;
+
+    if (selectedDate && selectedDate < date) {
       toast.error(
         'Delivery date cannot be before order date! Please select today or a future date.',
         {
@@ -256,8 +275,6 @@ const Order = ({ onBack }) => {
         },
       );
       setDeliveryDate(''); // Clear the invalid date
-    } else {
-      setDeliveryDate(selectedDate);
     }
   };
 
@@ -309,7 +326,7 @@ const Order = ({ onBack }) => {
       // determine voucher type based on location path
       const getVoucherType = () => {
         if (location.pathname.includes('/corporate')) {
-          return 'Corporate Order-Direct';
+          return 'Direct Order Management';
         } else if (location.pathname.includes('/distributor')) {
           return 'Distributor Order-Web Based';
         } else {
@@ -318,15 +335,15 @@ const Order = ({ onBack }) => {
       };
 
       const voucherType = getVoucherType();
-       // ✅ Handle customer data based on route
-      const customerData = isDistributorRoute 
+      // ✅ Handle customer data based on route
+      const customerData = isDistributorRoute
         ? {
             customer_code: distributorUser?.customer_code || 'DISTRIBUTOR',
-            customer_name: distributorUser?.customer_name || 'Distributor User'
+            customer_name: distributorUser?.customer_name || 'Distributor User',
           }
         : {
             customer_code: customerName?.customer_code || '',
-            customer_name: customerName?.customer_name || ''
+            customer_name: customerName?.customer_name || '',
           };
 
       const dbd = orderData.map(item => ({
@@ -334,8 +351,8 @@ const Order = ({ onBack }) => {
         order_no: orderNumber,
         date,
         status: 'pending',
-        executiveCode: distributorUser.usercode || '',
-        executive: distributorUser.username || '',
+        executiveCode: distributorUser.customer_code || '',
+        executive: distributorUser.customer_name || '',
         role: distributorUser.role || '',
         customer_code: customerData.customer_code,
         customer_name: customerData.customer_name,
@@ -515,7 +532,7 @@ const Order = ({ onBack }) => {
             readOnly
             value={
               location.pathname === '/corporate'
-                ? 'Corporate Order-Direct'
+                ? 'Direct Order Management'
                 : location.pathname === '/distributor'
                 ? 'Distributor Order-Web Based'
                 : 'Select Order'
@@ -643,7 +660,7 @@ const Order = ({ onBack }) => {
 
         {/* Customer Name (Read-only) */}
         {!isDistributorRoute && (
-          <div className="relative ml-7 w-96">
+          <div className="relative ml-7 w-80">
             <input
               type="text"
               readOnly
@@ -659,16 +676,16 @@ const Order = ({ onBack }) => {
 
         {isDistributorRoute && (
           <div className={`relative ${isDistributorRoute ? 'w-[150px]' : ''}`}>
-          <div className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium text-gray-700 text-center">
-            {distributorUser.customer_code || 'executive'}
+            <div className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium text-gray-700 text-center">
+              {distributorUser.customer_code || 'executive'}
+            </div>
+            <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
+              Customer Code *
+            </span>
           </div>
-          <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
-            Customer Code *
-          </span>
-        </div>
         )}
 
-        <div className={`relative ${isDistributorRoute ? 'w-[500px]' : ''}`}>
+        <div className={`relative ${isDistributorRoute ? 'w-[500px]' : 'w-[280px]'}`}>
           <div className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium text-gray-700 text-center">
             {distributorUser.customer_name || 'executive'}
           </div>
@@ -800,6 +817,7 @@ const Order = ({ onBack }) => {
               value={deliveryDate}
               min={date} // This prevents selecting past dates in the calendar UI
               onChange={e => handleDeliveryDateChange(e.target.value)}
+              onBlur={handleDeliveryDateBlur}
               onKeyDown={e => handleFieldKeyDown(e, deliveryModeRef)}
               className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium w-full bg-white cursor-pointer"
             />
@@ -1024,7 +1042,6 @@ const Order = ({ onBack }) => {
               <tfoot>
                 <tr className="*:border-[#932F67]">
                   <td className="text-right border w-16 px-1">{totals.qty}</td>
-                  <td className="w-32 border"></td>
                   <td className="text-right border w-28 px-1">{formatCurrency(totals.amount)}</td>
                 </tr>
               </tfoot>

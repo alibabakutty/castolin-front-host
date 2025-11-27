@@ -63,7 +63,7 @@ const ViewFetchMaster = () => {
         department: 'department',
       },
     },
-    corporate: {
+    direct: {
       title: 'Direct Orders',
       apiEndpoint: '/corporates',
       searchPlaceholder: 'Search by code, name, mobile number...',
@@ -85,7 +85,7 @@ const ViewFetchMaster = () => {
     inventory: 'Inventories',
     customer: 'Customers',
     distributor: 'Distributors',
-    corporate: 'Direct Orders',
+    direct: 'Direct Orders',
   };
 
   // Get current module configuration
@@ -226,14 +226,6 @@ const ViewFetchMaster = () => {
     setSearchTerm(e.target.value);
   };
 
-  const formatType = str => {
-    if (!str) return '';
-    return str
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  };
-
   const handleInventoryClick = item => {
     navigate(`/inventory-view/${item.item_code}`);
   };
@@ -264,7 +256,7 @@ const ViewFetchMaster = () => {
       case 'distributor':
         handleDistributorClick(item);
         break;
-      case 'corporate':
+      case 'direct':
         handleCorporateClick(item);
       default:
         break;
@@ -321,7 +313,7 @@ const ViewFetchMaster = () => {
           return (
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <p className="text-[12px] text-gray-800">{`${item.customer_code}-${item.customer_name}`}</p>
+                <p className="text-[12px] text-gray-800">{`${item.customer_code}-${item.customer_name} - ${item.role.toUpperCase()}`}</p>
                 {item.phone && (
                   <p className="text-xs text-gray-600">
                     Phone: <span className="text-gray-800">{item.phone}</span>
@@ -358,7 +350,7 @@ const ViewFetchMaster = () => {
             </div>
           );
 
-        case 'corporate':
+        case 'direct':
           return (
             <div className="flex justify-between items-start">
               <div className="flex-1">
@@ -484,7 +476,7 @@ const ViewFetchMaster = () => {
         <div className="w-1/2 bg-slate-100 border border-1-blue-400 flex justify-center flex-col items-center">
           <div className="w-[50%] h-16 flex flex-col justify-center items-center border border-black bg-white border-b-0">
             <p className="text-[13px] font-semibold underline underline-offset-4 decoration-gray-400 text-gray-700">
-              {formatType(type)} Display
+              {currentModule.itemName.toUpperCase()} DISPLAY
             </p>
             <input
               type="text"

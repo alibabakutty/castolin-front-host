@@ -135,14 +135,14 @@ const ViewFetchDistributor = ({ onBack }) => {
         const ordersData = response.data;
 
         // current loggedin user
-        const currentDistributorUsername = user?.username || user?.displayName || '';
+        const currentDistributorUsername = user?.customer_name.toLowerCase() || user?.displayName.toLowerCase() || '';
 
         // get unique orders by order_no
         const pendingUniqueOrders = ordersData
           .filter(
             order =>{
-              const hasDistributorRole = order.role && order.role.toLowerCase() === 'distributor';
-              const matchesCurrentUser = order.executive && order.executive.toLowerCase() === currentDistributorUsername.toLowerCase()
+              const hasDistributorRole = order.role && order.role === 'distributor';
+              const matchesCurrentUser = order.executive && order.executive.toLowerCase() === currentDistributorUsername
               
               return hasDistributorRole && matchesCurrentUser;
             }

@@ -29,7 +29,9 @@ const OrderReportPage = () => {
   const [status, setStatus] = useState('pending');
   const [remarks, setRemarks] = useState('');
   const location = useLocation();
-  const isViewOnlyReport = location.pathname.includes('order-report-corporate') || location.pathname.includes('order-report-distributor');
+  const isViewOnlyReport =
+    location.pathname.includes('order-report-corporate') ||
+    location.pathname.includes('order-report-distributor');
   const isSubmittingRef = useRef(false);
   const navigate = useNavigate();
 
@@ -81,7 +83,7 @@ const OrderReportPage = () => {
             customer_code: data[0].customer_code,
             customer_name: data[0].customer_name,
           });
-          setExecutiveName({ username: data[0].executive });
+          setExecutiveName({ customer_name: data[0].executive });
           // format the date here
           const rawDate = data[0].created_at;
           const formattedDate = formatDateForInput(rawDate);
@@ -154,16 +156,16 @@ const OrderReportPage = () => {
   };
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = e => {
       if (e.key === 'Escape') {
         e.preventDefault();
         navigate(-1);
       }
-    }
+    };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-    }
+    };
   }, [navigate]);
 
   const handleClick = () => {
@@ -223,9 +225,21 @@ const OrderReportPage = () => {
         grossAmount: gross - totalDisc,
       };
       setOrderData(prev => [...prev, newRow]);
-      toast.info('Product added Successfully!.', {
+      toast.info('Item added successfully!', {
         position: 'bottom-right',
         autoClose: 3000,
+        style: {
+          width: '380px',
+          minHeight: '20px',
+          fontSize: '12px',
+          padding: '10px',
+          borderRadius: '8px',
+          backgroundColor: '#f0f9ff',
+          color: '#0369a1',
+        },
+        progressStyle: {
+          background: 'linear-gradient(to right, #0369a1, #7dd3fc)',
+        },
       });
     }
 
@@ -315,7 +329,7 @@ const OrderReportPage = () => {
       } else {
         toast.error('Error updating order. Please try again.', {
           position: 'bottom-right',
-        autoClose: 3000,
+          autoClose: 3000,
         });
       }
       throw error;
@@ -379,68 +393,68 @@ const OrderReportPage = () => {
   };
 
   // Format for display - show as whole number
-  const formatQuantityForDisplay = (quantity) => {
+  const formatQuantityForDisplay = quantity => {
     const num = Number(quantity) || 0;
     // Remove any decimal places for display
     return Math.floor(num).toString();
   };
 
-// Function to handle discount percentage change
-const handleDiscChange = (index, value) => {
-  // Allow only numbers and decimal point
-  const decimalRegex = /^\d*\.?\d*$/;
-  if (value !== '' && !decimalRegex.test(value)) {
-    return; // Don't update if invalid
-  }
+  // Function to handle discount percentage change
+  const handleDiscChange = (index, value) => {
+    // Allow only numbers and decimal point
+    const decimalRegex = /^\d*\.?\d*$/;
+    if (value !== '' && !decimalRegex.test(value)) {
+      return; // Don't update if invalid
+    }
 
-  const updatedRows = [...orderData];
-  const row = updatedRows[index];
+    const updatedRows = [...orderData];
+    const row = updatedRows[index];
 
-  const disc = Number(value) || 0;
-  const gross = row.amount;
-  const qty = Number(row.itemQty) || 1;
+    const disc = Number(value) || 0;
+    const gross = row.amount;
+    const qty = Number(row.itemQty) || 1;
 
-  // Recalculate discount amounts
-  const discAmt = (gross * disc) / 100;
-  const splDiscAmt = ((gross - discAmt) * row.splDisc) / 100;
-  const totalDisc = discAmt + splDiscAmt;
+    // Recalculate discount amounts
+    const discAmt = (gross * disc) / 100;
+    const splDiscAmt = ((gross - discAmt) * row.splDisc) / 100;
+    const totalDisc = discAmt + splDiscAmt;
 
-  updatedRows[index].disc = value; // Keep as string for proper display
-  updatedRows[index].discAmt = discAmt;
-  updatedRows[index].splDiscAmt = splDiscAmt;
-  updatedRows[index].netRate = qty > 0 ? (gross - totalDisc) / qty : 0;
-  updatedRows[index].grossAmount = gross - totalDisc;
+    updatedRows[index].disc = value; // Keep as string for proper display
+    updatedRows[index].discAmt = discAmt;
+    updatedRows[index].splDiscAmt = splDiscAmt;
+    updatedRows[index].netRate = qty > 0 ? (gross - totalDisc) / qty : 0;
+    updatedRows[index].grossAmount = gross - totalDisc;
 
-  setOrderData(updatedRows);
-};
+    setOrderData(updatedRows);
+  };
 
-// Function to handle special discount percentage change
-const handleSplDiscChange = (index, value) => {
-  // Allow only numbers and decimal point
-  const decimalRegex = /^\d*\.?\d*$/;
-  if (value !== '' && !decimalRegex.test(value)) {
-    return; // Don't update if invalid
-  }
+  // Function to handle special discount percentage change
+  const handleSplDiscChange = (index, value) => {
+    // Allow only numbers and decimal point
+    const decimalRegex = /^\d*\.?\d*$/;
+    if (value !== '' && !decimalRegex.test(value)) {
+      return; // Don't update if invalid
+    }
 
-  const updatedRows = [...orderData];
-  const row = updatedRows[index];
+    const updatedRows = [...orderData];
+    const row = updatedRows[index];
 
-  const splDisc = parseFloat(value) || 0;
-  const gross = Number(row.amount) || 0;
-  const qty = Number(row.itemQty) || 1;
-  const discAmt = (gross * Number(row.disc || 0)) / 100;
+    const splDisc = parseFloat(value) || 0;
+    const gross = Number(row.amount) || 0;
+    const qty = Number(row.itemQty) || 1;
+    const discAmt = (gross * Number(row.disc || 0)) / 100;
 
-  // Recalculate special discount amounts
-  const splDiscAmt = ((gross - discAmt) * splDisc) / 100;
-  const totalDisc = discAmt + splDiscAmt;
+    // Recalculate special discount amounts
+    const splDiscAmt = ((gross - discAmt) * splDisc) / 100;
+    const totalDisc = discAmt + splDiscAmt;
 
-  updatedRows[index].splDisc = value; // Keep as string for proper display
-  updatedRows[index].splDiscAmt = splDiscAmt;
-  updatedRows[index].netRate = qty > 0 ? (gross - totalDisc) / qty : 0;
-  updatedRows[index].grossAmount = gross - totalDisc;
+    updatedRows[index].splDisc = value; // Keep as string for proper display
+    updatedRows[index].splDiscAmt = splDiscAmt;
+    updatedRows[index].netRate = qty > 0 ? (gross - totalDisc) / qty : 0;
+    updatedRows[index].grossAmount = gross - totalDisc;
 
-  setOrderData(updatedRows);
-};
+    setOrderData(updatedRows);
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -470,7 +484,7 @@ const handleSplDiscChange = (index, value) => {
         date,
         status: status,
         remarks: remarks,
-        executive: executiveName.username || '',
+        executive: executiveName.customer_name || '',
         customer_code: customerName.customer_code || '',
         customer_name: customerName.customer_name,
         item_code: item.itemCode,
@@ -697,7 +711,7 @@ const handleSplDiscChange = (index, value) => {
             readOnly
             required
             value={orderNumber || ''}
-            className="peer w-full border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
+            className="peer w-[140px] border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
           />
           <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
             Order No *
@@ -706,7 +720,7 @@ const handleSplDiscChange = (index, value) => {
 
         {/* Customer Code */}
         <div className="relative">
-          <div className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium text-center w-full">
+          <div className="border p-[3.5px] rounded-[5px] border-[#932F67] text-sm font-medium text-center w-[120px]">
             {customerName?.customer_code || ''}
           </div>
           <span className="absolute left-2.5 top-[10px] transition-all text-[12px] -translate-y-[15px] text-[#932F67] bg-[#E9EFEC] px-1 rounded font-semibold leading-2">
@@ -721,7 +735,7 @@ const handleSplDiscChange = (index, value) => {
             readOnly
             required
             value={customerName?.customer_name || 'Select Customer'}
-            className="peer w-full border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
+            className="peer w-[370px] border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
           />
           <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
             Name *
@@ -734,8 +748,8 @@ const handleSplDiscChange = (index, value) => {
             type="name"
             readOnly
             required
-            value={executiveName?.username.toUpperCase() || ''}
-            className="peer w-full border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium text-center"
+            value={executiveName?.customer_name || ''}
+            className="peer w-[300px] border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium text-center"
           />
           <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
             Executive Name *
@@ -749,7 +763,7 @@ const handleSplDiscChange = (index, value) => {
             readOnly
             required
             defaultValue={date}
-            className="peer w-full border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
+            className="peer w-[110px] border border-[#932F67] rounded p-[3.5px] focus:outline-none focus:border-[#932F67] text-sm font-medium"
           />
           <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
             Order Date *
@@ -832,49 +846,49 @@ const handleSplDiscChange = (index, value) => {
           {!isViewOnlyReport && (
             <>
               <div className="flex items-center">
-            <span className="text-sm font-medium mr-2">Qty * :</span>
-            <input
-              type="text"
-              name="qty"
-              ref={quantityInputRef}
-              value={quantity}
-              onChange={e => setQuantity(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder='0'
-              className="py-0.5 border w-16 outline-none text-sm rounded px-1 border-[#932F67] bg-[#F8F4EC] text-center"
-              autoComplete="off"
-            />
-          </div>
-          <div>
-            <input
-              type="button"
-              ref={buttonRef}
-              value={'Add'}
-              onClick={handleClick}
-              className="bg-[#693382] text-white px-4 rounded-[6px] py-0.5 outline-none"
-            />
-          </div>
+                <span className="text-sm font-medium mr-2">Qty * :</span>
+                <input
+                  type="text"
+                  name="qty"
+                  ref={quantityInputRef}
+                  value={quantity}
+                  onChange={e => setQuantity(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="0"
+                  className="py-0.5 border w-16 outline-none text-sm rounded px-1 border-[#932F67] bg-[#F8F4EC] text-center"
+                  autoComplete="off"
+                />
+              </div>
+              <div>
+                <input
+                  type="button"
+                  ref={buttonRef}
+                  value={'Add'}
+                  onClick={handleClick}
+                  className="bg-[#693382] text-white px-4 rounded-[6px] py-0.5 outline-none"
+                />
+              </div>
 
-          <div className="flex w-44 justify-end ml-20">
-            {/* Show Update button when editing existing order, Save for new orders */}
-            {selectedOrderData ? (
-              <button
-                type="button"
-                onClick={handleUpdate}
-                className="bg-[#28a745] text-white px-4 rounded-[6px] py-0.5 outline-none hover:bg-[#218838] transition-colors"
-              >
-                Update
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="bg-[#693382] text-white px-4 rounded-[6px] py-0.5 outline-none hover:bg-[#5a2a6f] transition-colors"
-              >
-                Save
-              </button>
-            )}
-          </div>
+              <div className="flex w-44 justify-end ml-20">
+                {/* Show Update button when editing existing order, Save for new orders */}
+                {selectedOrderData ? (
+                  <button
+                    type="button"
+                    onClick={handleUpdate}
+                    className="bg-[#28a745] text-white px-4 rounded-[6px] py-0.5 outline-none hover:bg-[#218838] transition-colors"
+                  >
+                    Update
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-[#693382] text-white px-4 rounded-[6px] py-0.5 outline-none hover:bg-[#5a2a6f] transition-colors"
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
             </>
           )}
         </div>
@@ -902,33 +916,35 @@ const handleSplDiscChange = (index, value) => {
                 <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-8">
                   Quantity
                 </td>
-                <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 w-8">
-                  UOM
-                </td>
+                <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 w-8">UOM</td>
                 <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-24">
                   Rate
                 </td>
                 <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-28">
                   Amount
                 </td>
-                <td className="font-medium text-sm border border-gray-300 px-2 text-right w-20">
-                  Disc %
-                </td>
-                <td className="font-medium text-sm border border-gray-300 text-center w-20">
-                  Disc Amt
-                </td>
-                <td className="font-medium text-sm border border-gray-300 px-2 text-right w-28">
-                  Spl Disc %
-                </td>
-                <td className="font-medium text-sm border border-gray-300 px-2 text-right w-32">
-                  Spl Disc Amt
-                </td>
-                <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-28">
-                  Net Amount
-                </td>
-                <td className="font-medium border text-sm border-gray-300 py-0.5 px-2 text-right w-32">
-                  Gross Amount
-                </td>
+                {!isViewOnlyReport && (
+                  <>
+                    <td className="font-medium text-sm border border-gray-300 px-2 text-right w-20">
+                      Disc %
+                    </td>
+                    <td className="font-medium text-sm border border-gray-300 text-center w-20">
+                      Disc Amt
+                    </td>
+                    <td className="font-medium text-sm border border-gray-300 px-2 text-right w-28">
+                      Spl Disc %
+                    </td>
+                    <td className="font-medium text-sm border border-gray-300 px-2 text-right w-32">
+                      Spl Disc Amt
+                    </td>
+                    <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-right w-28">
+                      Net Amount
+                    </td>
+                    <td className="font-medium border text-sm border-gray-300 py-0.5 px-2 text-right w-32">
+                      Gross Amount
+                    </td>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -951,7 +967,13 @@ const handleSplDiscChange = (index, value) => {
                     <td className="border border-gray-400  text-center text-sm">{item.gst}</td>
                     {/* Editable Quantity */}
                     <td className="border border-gray-400  px-2 text-right text-sm bg-[#F8F4EC]">
-                      <input type="text" value={formatQuantityForDisplay(item.itemQty)} onChange={e => handleQuantityChange(index, e.target.value)} disabled={isViewOnlyReport} className='w-full text-right outline-none border-none bg-transparent text-sm px-1' />
+                      <input
+                        type="text"
+                        value={formatQuantityForDisplay(item.itemQty)}
+                        onChange={e => handleQuantityChange(index, e.target.value)}
+                        disabled={isViewOnlyReport}
+                        className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
+                      />
                     </td>
                     <td className="border border-gray-400  text-center text-sm">{item.uom}</td>
                     <td className="border border-gray-400  px-2 text-right text-sm">
@@ -961,47 +983,49 @@ const handleSplDiscChange = (index, value) => {
                       {formatCurrency(item.amount)}
                     </td>
 
-                    {/* Editable Discount % */}
-                    <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
-                      <div className="flex items-center justify-end gap-1">
-                        <input
-                          type="text"
-                          value={item.disc}
-                          onChange={e => handleDiscChange(index, e.target.value)}
-                          disabled={isViewOnlyReport}
-                          className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
-                        />
-                        <span className="text-xs">%</span>
-                      </div>
-                    </td>
+                    {!isViewOnlyReport && (
+                      <>
+                        <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
+                          <div className="flex items-center justify-end gap-1">
+                            <input
+                              type="text"
+                              value={item.disc}
+                              onChange={e => handleDiscChange(index, e.target.value)}
+                              disabled={isViewOnlyReport}
+                              className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
+                            />
+                            <span className="text-xs">%</span>
+                          </div>
+                        </td>
 
-                    <td className="border border-gray-400 px-2 text-right text-sm w-">
-                      {formatCurrency(item.discAmt)}
-                    </td>
+                        <td className="border border-gray-400 px-2 text-right text-sm w-">
+                          {formatCurrency(item.discAmt)}
+                        </td>
 
-                    {/* Editable Special Discount % */}
-                    <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
-                      <div className="flex items-center justify-end gap-1">
-                        <input
-                          type="text"
-                          value={item.splDisc}
-                          onChange={e => handleSplDiscChange(index, e.target.value)}
-                          disabled={isViewOnlyReport}
-                          className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
-                        />
-                        <span className="text-xs">%</span>
-                      </div>
-                    </td>
+                        <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
+                          <div className="flex items-center justify-end gap-1">
+                            <input
+                              type="text"
+                              value={item.splDisc}
+                              onChange={e => handleSplDiscChange(index, e.target.value)}
+                              disabled={isViewOnlyReport}
+                              className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
+                            />
+                            <span className="text-xs">%</span>
+                          </div>
+                        </td>
 
-                    <td className="border border-gray-400 px-2 text-right text-sm">
-                      {formatCurrency(item.splDiscAmt)}
-                    </td>
-                    <td className="border border-gray-400  px-2 text-right text-sm">
-                      {formatCurrency(item.netRate)}
-                    </td>
-                    <td className="border border-gray-400  px-4 text-right text-sm">
-                      {formatCurrency(item.grossAmount)}
-                    </td>
+                        <td className="border border-gray-400 px-2 text-right text-sm">
+                          {formatCurrency(item.splDiscAmt)}
+                        </td>
+                        <td className="border border-gray-400  px-2 text-right text-sm">
+                          {formatCurrency(item.netRate)}
+                        </td>
+                        <td className="border border-gray-400  px-4 text-right text-sm">
+                          {formatCurrency(item.grossAmount)}
+                        </td>
+                      </>
+                    )}
                   </tr>
                 ))
               )}
@@ -1016,12 +1040,12 @@ const handleSplDiscChange = (index, value) => {
                 name="remarks"
                 id="remarks"
                 value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
+                onChange={e => setRemarks(e.target.value)}
                 placeholder="Remarks"
                 disabled={isViewOnlyReport}
                 className="border border-[#932F67] resize-none md:w-[400px] outline-none rounded px-1  peer h-[26px] bg-[#F8F4EC]"
               ></textarea>
-              <div className='ml-4'>
+              <div className="ml-4">
                 <label htmlFor="" className="text-sm font-medium">
                   Status :{' '}
                 </label>
@@ -1047,14 +1071,22 @@ const handleSplDiscChange = (index, value) => {
             <table className="w-full border-b mb-1">
               <tfoot>
                 <tr className="*:border-[#932F67]">
-                  <td className="text-right border w-24 px-1">{formatQuantityForDisplay(totals.qty)}</td>
+                  <td className="text-right border w-24 px-1">
+                    {formatQuantityForDisplay(totals.qty)}
+                  </td>
                   <td className="w-32 border"></td>
 
                   <td className="text-right border w-28 px-1">{formatCurrency(totals.amount)}</td>
 
-                  <td className="text-right border w-24 px-1"></td>
+                  {!isViewOnlyReport && (
+                    <>
+                      <td className="text-right border w-24 px-1"></td>
 
-                  <td className="text-right border w-28 px-1">{formatCurrency(totals.grossAmt)}</td>
+                      <td className="text-right border w-28 px-1">
+                        {formatCurrency(totals.grossAmt)}
+                      </td>
+                    </>
+                  )}
                 </tr>
               </tfoot>
             </table>

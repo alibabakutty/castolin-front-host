@@ -135,14 +135,14 @@ const ViewFetchCorporate = ({ onBack }) => {
         const ordersData = response.data;
 
         // current loggedin user
-        const currentCorporateUsername = user?.username || user?.displayName || '';
+        const currentCorporateUsername = user?.customer_name.toLowerCase() || user?.displayName.toLowerCase() || '';
 
         // get unique orders by order_no
         const pendingUniqueOrders = ordersData
           .filter(
             order => {
-              const hasCorporateRole = order.role && order.role.toLowerCase() === 'corporate';
-              const matchesCurrentUser = order.executive && order.executive.toLowerCase() === currentCorporateUsername.toLowerCase()
+              const hasCorporateRole = order.role && order.role === 'direct';
+              const matchesCurrentUser = order.executive && order.executive.toLowerCase() === currentCorporateUsername
               
               return hasCorporateRole && matchesCurrentUser;
             }
@@ -264,13 +264,13 @@ const ViewFetchCorporate = ({ onBack }) => {
     <div className="flex">
       <div className="w-[100%] h-[100vh] flex">
         <div className="w-full">
-          <Title title={`Sales Quotation - Corporate`} nav={onBack} />
+          <Title title={`Sales Quotation - Direct Order`} nav={onBack} />
 
           {/* Header row: Title + Date Range + Search */}
           <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-gray-300 bg-white px-3 py-2">
             {/* Left section - title */}
             <div className="text-sm font-amasis text-gray-700">
-              List of All Corporate Sales Quotation
+              List of All Direct-Order Sales Quotation
             </div>
 
             {/* Right section - search box */}
@@ -295,7 +295,7 @@ const ViewFetchCorporate = ({ onBack }) => {
             <div className="w-[15%] text-left pl-2">Date</div>
             <div className="w-[20%] text-center">Vch No.</div>
             <div className="w-[35%] text-left">Customer</div>
-            <div className="w-[20%] text-left">Corporate</div>
+            <div className="w-[20%] text-left">Direct</div>
             <div className="w-[15%] text-center">Status</div>
             <div className="w-[20%] text-right pr-3">Amount</div>
           </div>
@@ -308,7 +308,7 @@ const ViewFetchCorporate = ({ onBack }) => {
             <div className="border-t border-gray-300 bg-gray-50 py-2 px-3 font-amasis">
               <div className="flex justify-between items-center text-xs text-gray-600">
                 <div>
-                  Showing {filteredOrders.length} of {allOrders.length} corporate sales
+                  Showing {filteredOrders.length} of {allOrders.length} direct-order sales
                   quotations {searchTerm && ` for "${searchTerm}"`}
                 </div>
                 <div className="font-medium">Total: ₹ {totalFilteredAmount.toFixed(2)}</div>
