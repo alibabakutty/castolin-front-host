@@ -124,11 +124,6 @@ const DistributorAuthForm = () => {
 
           {/* Actions */}
           <div className="space-y-3">
-            <div className="text-right">
-              <button type="button" className="text-blue-300 hover:text-blue-200 text-xs font-amasis">
-                Forgot Password?
-              </button>
-            </div>
 
             <button
               type="submit"
@@ -151,7 +146,7 @@ const DistributorAuthForm = () => {
 
             <div className="text-center">
               <p className="text-white/70 text-xs font-amasis">
-                Don't have an distributor account?{" "}
+                Don't have a distributor account?{" "}
                 <span className="text-white/50 text-xs">
                   Contact administrator
                 </span>

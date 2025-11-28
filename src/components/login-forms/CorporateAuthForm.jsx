@@ -123,11 +123,6 @@ const CorporateAuthForm = () => {
 
           {/* Actions */}
           <div className="space-y-3">
-            <div className="text-right">
-              <button type="button" className="text-blue-300 hover:text-blue-200 text-xs font-amasis">
-                Forgot Password?
-              </button>
-            </div>
 
             <button
               type="submit"
@@ -150,7 +145,7 @@ const CorporateAuthForm = () => {
 
             <div className="text-center">
               <p className="text-white/70 text-xs font-amasis">
-                Don't have an direct order account?{" "}
+                Don't have a direct order account?{" "}
                 <span className="text-white/50 text-xs font-amasis">
                   Contact administrator
                 </span>

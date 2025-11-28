@@ -17,9 +17,16 @@ const ContextProvider = ({ children }) => {
   const [distributorUser, setDistributorUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
+      // Skip auth state processing during signup
+      if (isSigningUp) {
+        console.log('Skipping auth state change during signup');
+        return;
+      }
+
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();
         let userData = null;
@@ -44,7 +51,7 @@ const ContextProvider = ({ children }) => {
               if (res.data && res.data[0]) {
                 userData = res.data[0];
                 role = userData.role;
-                
+
                 // Set distributor data if user is distributor
                 if (storedUserType === 'distributor') {
                   distributorData = userData;
@@ -61,9 +68,9 @@ const ContextProvider = ({ children }) => {
             const endpoints = [
               { path: '/me-admin', type: 'admin' },
               { path: '/me-distributor', type: 'distributor' },
-              { path: '/me-corporate', type: 'corporate' }
+              { path: '/me-corporate', type: 'corporate' },
             ];
-            
+
             for (const endpoint of endpoints) {
               try {
                 const res = await api.get(endpoint.path, {
@@ -97,11 +104,10 @@ const ContextProvider = ({ children }) => {
             username: userData?.username || null,
             customer_name: userData?.customer_name || null,
           });
-          
+
           // Set distributor user data separately
           setDistributorUser(distributorData);
           setRole(userData?.role || null);
-          
         } catch (err) {
           console.error('Auth state fetch failed:', err);
           setUser(firebaseUser);
@@ -118,8 +124,7 @@ const ContextProvider = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
-
+  }, [isSigningUp]); // Add isSigningUp as dependency
 
   const login = async (email, password) => {
     try {
@@ -210,6 +215,7 @@ const ContextProvider = ({ children }) => {
   };
 
   const signup = async (username, email, password, userType = 'admin', mobileNumber) => {
+    setIsSigningUp(true);
     try {
       // 1. Create Firebase user
       const credential = await createUserWithEmailAndPassword(auth, email, password);
@@ -217,10 +223,7 @@ const ContextProvider = ({ children }) => {
       const token = await firebaseUser.getIdToken();
 
       // 2. Create user in appropriate MySQL table
-      const endpoint =
-        userType === 'admin'
-          ? '/signup-admin'
-          : 'undefine-signup';
+      const endpoint = userType === 'admin' ? '/signup-admin' : 'undefine-signup';
 
       const res = await api.post(
         endpoint,
@@ -257,96 +260,106 @@ const ContextProvider = ({ children }) => {
         success: false,
         message: error.response?.data?.error || error.message || 'Signup failed',
       };
+    } finally {
+      setIsSigningUp(false);
     }
   };
 
   const signupDistributor = async (usercode, updates, email, password) => {
-  try {
-    // 1. Create Firebase user
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
-    const firebaseUser = credential.user;
-    const token = await firebaseUser.getIdToken();
+    setIsSigningUp(true);
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = credential.user;
+      const token = await firebaseUser.getIdToken();
 
-    // 2. Prepare data for MySQL update
-    const updatePayload = {
-      ...updates,
-      firebase_uid: firebaseUser.uid, // Add Firebase UID to the update
-      email: email // Ensure email is included
-    };
+      const updatePayload = {
+        ...updates,
+        firebase_uid: firebaseUser.uid,
+        email: email,
+      };
 
-    // 3. Update distributor in MySQL database
-    const res = await api.put(
-      `/distributors/${usercode}`,
-      updatePayload,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+      const res = await api.put(`/distributors/${usercode}`, updatePayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    return { 
-      success: true, 
-      message: res.data?.message,
-      affectedRows: res.data?.affectedRows 
-    };
-  } catch (error) {
-    console.error("Distributor update failed:", error);
-    // Clean up Firebase user if MySQL update fails
-    if (auth.currentUser) await auth.currentUser.delete();
-    return {
-      success: false,
-      message: error.response?.data?.error || error.message
-    };
-  }
-};
+      // Sign out the distributor immediately
+      await signOut(auth);
 
-const signupDirectOrder = async (usercode, updates, email, password) => {
-  try {
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
-    const firebaseUser = credential.user;
-    const token = await firebaseUser.getIdToken();
+      return {
+        success: true,
+        message: res.data?.message,
+        affectedRows: res.data?.affectedRows,
+      };
+    } catch (error) {
+      console.error('Distributor update failed:', error);
+      if (auth.currentUser && auth.currentUser.email === email) {
+        await auth.currentUser.delete();
+      }
+      return {
+        success: false,
+        message: error.response?.data?.error || error.message,
+      };
+    } finally {
+      setIsSigningUp(false);
+    }
+  };
 
-    const updatePayload = {
-      ...updates,
-      firebase_uid: firebaseUser.uid,
-      email: email,
-    };
+  const signupDirectOrder = async (usercode, updates, email, password) => {
+    setIsSigningUp(true);
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = credential.user;
+      const token = await firebaseUser.getIdToken();
 
-    const res = await api.put(
-      `/corporates/${usercode}`,
-      updatePayload,
-      { headers: { Authorization: `Bearer ${token}` }}
-    );
+      const updatePayload = {
+        ...updates,
+        firebase_uid: firebaseUser.uid,
+        email: email,
+      };
 
-    return {
-      success: true,
-      message: res.data?.message,
-      affectedRows: res.data?.affectedRows
-    };
-  } catch (error) {
-    console.error('Direct Order update failed:', error);
+      const res = await api.put(`/corporates/${usercode}`, updatePayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if(auth.currentUser) await auth.currentUser.delete();
-    return {
-      success: false,
-      message: error.response?.data?.error || error.message
-    };
-  }
-};
+      // Sign out the corporate user immediately
+      await signOut(auth);
+
+      return {
+        success: true,
+        message: res.data?.message,
+        affectedRows: res.data?.affectedRows,
+      };
+    } catch (error) {
+      console.error('Direct Order update failed:', error);
+
+      if (auth.currentUser && auth.currentUser.email === email) {
+        await auth.currentUser.delete();
+      }
+      return {
+        success: false,
+        message: error.response?.data?.error || error.message,
+      };
+    } finally {
+      setIsSigningUp(false);
+    }
+  };
 
   const logout = () => signOut(auth);
 
   return (
     <AuthContext.Provider
-      value={{ 
-        role, 
-        user, 
+      value={{
+        role,
+        user,
         distributorUser,
-        signup, 
+        signup,
         signupDistributor,
         signupDirectOrder,
-        login, 
-        loginDistributor, 
-        loginCorporate, 
+        login,
+        loginDistributor,
+        loginCorporate,
         logout,
-        loading // You might want to expose this too
+        loading,
       }}
     >
       {!loading && children}

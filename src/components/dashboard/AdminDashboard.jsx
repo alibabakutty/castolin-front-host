@@ -341,7 +341,7 @@ const AdminDashboard = () => {
         </button>
 
         {/* System Settings Button */}
-        <button
+        {/* <button
           onClick={() => setCurrentPage('system-settings')}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 group w-full"
         >
@@ -370,10 +370,10 @@ const AdminDashboard = () => {
             <h3 className="text-xl font-medium text-gray-700 mb-2">System Settings</h3>
             <p className="text-gray-600">Configure system preferences</p>
           </div>
-        </button>
+        </button> */}
 
         {/* Analytics Dashboard Button */}
-        <button
+        {/* <button
           onClick={() => setCurrentPage('analytics')}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 group w-full"
         >
@@ -402,7 +402,7 @@ const AdminDashboard = () => {
             <h3 className="text-xl font-medium text-gray-700 mb-2">Analytics Dashboard</h3>
             <p className="text-gray-600">View business insights</p>
           </div>
-        </button>
+        </button> */}
       </div>
     </div>
   );

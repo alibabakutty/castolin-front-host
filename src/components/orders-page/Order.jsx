@@ -57,10 +57,12 @@ const Order = ({ onBack }) => {
   }, [onBack, navigate]);
 
   useEffect(() => {
-    if (customerSelectRef.current) {
+    if (location.pathname.includes('/distributor') && itemSelectRef.current) {
+      itemSelectRef.current.focus();
+    } else if (location.pathname.includes('/corporate') && customerSelectRef.current) {
       customerSelectRef.current.focus();
     }
-  }, []);
+  }, [location.pathname]);
 
   const [totals, setTotals] = useState({
     qty: 0,
@@ -275,7 +277,13 @@ const Order = ({ onBack }) => {
         },
       );
       setDeliveryDate(''); // Clear the invalid date
+      // Keep focus on delivery date field instead of moving to next field
+      setTimeout(() => {
+        deliveryDateRef.current.focus();
+      }, 100);
+      return false; // Prevent further processing
     }
+    return true; // validation passed
   };
 
   const postOrder = async () => {
@@ -417,8 +425,6 @@ const Order = ({ onBack }) => {
       customerSelectRef.current.focus();
     }, 100);
   };
-
-  console.log(database);
 
   useEffect(() => {
     if (database.length > 0) {
@@ -571,21 +577,9 @@ const Order = ({ onBack }) => {
             <Select
               ref={customerSelectRef}
               className="text-sm peer"
-              value={
-                customerName
-                  ? {
-                      customer_code: customerName.customer_code,
-                      customer_name: customerName.customer_name,
-                      // Create a display label for the selected value
-                      label: customerName.customer_code,
-                    }
-                  : null
-              }
-              options={customerOptions.map(customer => ({
-                ...customer,
-                label: `${customer.customer_code} - ${customer.customer_name}`, // Show in dropdown
-              }))}
-              getOptionLabel={e => e.label} // Use the custom label for dropdown
+              value={customerName}
+              options={customerOptions}
+              // getOptionLabel={e => e.label} // Use the custom label for dropdown
               getOptionValue={e => e.customer_code} // Store only the code
               onChange={handleCustomerSelect}
               placeholder=""
@@ -593,6 +587,11 @@ const Order = ({ onBack }) => {
                 DropdownIndicator: () => null,
                 IndicatorSeparator: () => null,
               }}
+              formatOptionLabel={(option, { context }) =>
+                context === 'menu'
+                  ? `${option.customer_code} - ${option.customer_name}`
+                  : option.customer_code
+              }
               styles={{
                 ...customStyles,
                 control: base => ({
@@ -643,14 +642,6 @@ const Order = ({ onBack }) => {
                 }),
               }}
               menuPortalTarget={document.body}
-              formatOptionLabel={(option, { context }) => {
-                // In dropdown, show "code - name"
-                if (context === 'menu') {
-                  return `${option.customer_code} - ${option.customer_name}`;
-                }
-                // In selected value, show only code
-                return option.customer_code;
-              }}
             />
             <span className="absolute left-2.5 top-[12px] transition-all pointer-events-none -translate-y-[17px] text-[#932F67] px-1.5 font-semibold text-[12px] bg-[#E9EFEC] peer-valid:text-[#932F67] leading-2 rounded">
               Customer Code *
@@ -723,20 +714,9 @@ const Order = ({ onBack }) => {
             <Select
               ref={itemSelectRef}
               className="text-sm peer"
-              value={
-                item
-                  ? {
-                      item_code: item.item_code,
-                      item_name: item.stock_item_name,
-                      label: item.item_code,
-                    }
-                  : null
-              }
-              options={itemOptions.map(item => ({
-                ...item,
-                label: `${item.item_code} - ${item.stock_item_name}`,
-              }))}
-              getOptionLabel={e => e.label}
+              value={item}
+              options={itemOptions}
+              // getOptionLabel={e => `${e.item_code} - ${e.stock_item_name}`}
               getOptionValue={e => e.item_code}
               onChange={handleItemSelect}
               placeholder=""
@@ -744,18 +724,21 @@ const Order = ({ onBack }) => {
                 DropdownIndicator: () => null,
                 IndicatorsContainer: () => null,
               }}
+              formatOptionLabel={(option, { context }) =>
+                context === 'menu'
+                  ? `${option.item_code} - ${option.stock_item_name}`
+                  : option.item_code
+              }
               styles={{
                 ...customStyles,
                 control: base => ({
                   ...base,
                   minHeight: '30px',
                   height: '30px',
-                  lineHeight: '1',
-                  padding: '0px 1px',
-                  width: '100%',
                   backgroundColor: '#F8F4EC',
                   borderColor: '#932F67',
                   boxShadow: 'none',
+                  cursor: 'pointer',
                 }),
                 singleValue: base => ({
                   ...base,
@@ -783,10 +766,6 @@ const Order = ({ onBack }) => {
                   width: '550px',
                   minWidth: '120px',
                   zIndex: 9999,
-                }),
-                menuList: base => ({
-                  ...base,
-                  padding: '0',
                 }),
               }}
               menuPortalTarget={document.body}

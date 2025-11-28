@@ -239,13 +239,6 @@ const AdminAuthForm = () => {
 
           {/* Actions */}
           <div className="space-y-3">
-            {isLogin && (
-              <div className="text-right">
-                <button type="button" className="text-blue-300 hover:text-blue-200 text-xs font-amasis">
-                  Forgot Password?
-                </button>
-              </div>
-            )}
 
             <button
               type="submit"
