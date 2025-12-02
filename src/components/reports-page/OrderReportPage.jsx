@@ -1042,34 +1042,36 @@ const OrderReportPage = () => {
                   Amount
                 </td>
 
-                {!isViewOnlyReport && (
+                {/* {!isViewOnlyReport && (
                   <>
-                    <td className="font-medium text-sm border border-gray-300 px-2 text-right w-20">
-                      Disc %
-                    </td>
-                    <td className="font-medium text-sm border border-gray-300 px-2 text-right w-28">
-                      Spl Disc %
-                    </td>
-                    <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-center w-24">
-                      Net Rate
-                    </td>
-                    <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-28">
-                      Gross Amount
-                    </td>
-                    <td className="font-medium text-sm border border-gray-300 py-0.5 text-center w-[68px]">
-                      HSN
-                    </td>
-                    <td className="font-medium text-sm border border-gray-300 py-0.5 px-1 w-16 text-center">
-                      GST %
-                    </td>
-                    <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-[100px]">
-                      Dely. Date
-                    </td>
-                    <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-[83px]">
-                      Dely. Mode
-                    </td>
+                    
                   </>
-                )}
+                )} */}
+
+                <td className="font-medium text-sm border border-gray-300 px-2 text-right w-20">
+                  Disc %
+                </td>
+                <td className="font-medium text-sm border border-gray-300 px-2 text-right w-24">
+                  Spl Disc %
+                </td>
+                <td className="font-medium text-sm border border-gray-300 py-0.5 px-2 text-center w-24">
+                  Net Rate
+                </td>
+                <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-28">
+                  Gross Amount
+                </td>
+                <td className="font-medium text-sm border border-gray-300 py-0.5 text-center w-[68px]">
+                  HSN
+                </td>
+                <td className="font-medium text-sm border border-gray-300 py-0.5 px-1 w-16 text-center">
+                  GST %
+                </td>
+                <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-[100px]">
+                  Dely. Date
+                </td>
+                <td className="font-medium border text-sm border-gray-300 py-0.5 text-center w-[83px]">
+                  Dely. Mode
+                </td>
               </tr>
             </thead>
             <tbody>
@@ -1106,51 +1108,53 @@ const OrderReportPage = () => {
                       {formatCurrency(item.amount)}
                     </td>
 
-                    {!isViewOnlyReport && (
+                    {/* {!isViewOnlyReport && (
                       <>
-                        <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
-                          <div className="flex items-center justify-end gap-1">
-                            <input
-                              type="text"
-                              value={item.disc}
-                              onChange={e => handleDiscChange(index, e.target.value)}
-                              disabled={isViewOnlyReport}
-                              className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
-                            />
-                            <span className="text-xs">%</span>
-                          </div>
-                        </td>
-
-                        <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
-                          <div className="flex items-center justify-end gap-1">
-                            <input
-                              type="text"
-                              value={item.splDisc}
-                              onChange={e => handleSplDiscChange(index, e.target.value)}
-                              disabled={isViewOnlyReport}
-                              className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
-                            />
-                            <span className="text-xs">%</span>
-                          </div>
-                        </td>
-                        <td className="border border-gray-400  px-1 text-right text-sm">
-                          {formatCurrency(item.netRate)}
-                        </td>
-                        <td className="border border-gray-400  px-2 text-right text-sm">
-                          {formatCurrency(item.grossAmount)}
-                        </td>
-                        <td className="border border-gray-400  text-center text-sm">{item.hsn}</td>
-                        <td className="border border-gray-400  text-center text-sm">
-                          {Math.round(item.gst)}
-                        </td>
-                        <td className="border border-gray-400 text-center text-sm">
-                          {formatDate(item.delivery_date || '')}
-                        </td>
-                        <td className="border border-gray-400  px-2 text-sm">
-                          {item.delivery_mode || ''}
-                        </td>
+                        
                       </>
-                    )}
+                    )} */}
+
+                    <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
+                      <div className="flex items-center justify-end gap-1">
+                        <input
+                          type="text"
+                          value={item.disc}
+                          onChange={e => handleDiscChange(index, e.target.value)}
+                          disabled={isViewOnlyReport}
+                          className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
+                        />
+                        <span className="text-xs">%</span>
+                      </div>
+                    </td>
+
+                    <td className="border border-gray-400 px-1 text-center bg-[#F8F4EC]">
+                      <div className="flex items-center justify-end gap-1">
+                        <input
+                          type="text"
+                          value={item.splDisc}
+                          onChange={e => handleSplDiscChange(index, e.target.value)}
+                          disabled={isViewOnlyReport}
+                          className="w-full text-right outline-none border-none bg-transparent text-sm px-1"
+                        />
+                        <span className="text-xs">%</span>
+                      </div>
+                    </td>
+                    <td className="border border-gray-400  px-1 text-right text-sm">
+                      {formatCurrency(item.netRate)}
+                    </td>
+                    <td className="border border-gray-400  px-2 text-right text-sm">
+                      {formatCurrency(item.grossAmount)}
+                    </td>
+                    <td className="border border-gray-400  text-center text-sm">{item.hsn}</td>
+                    <td className="border border-gray-400  text-center text-sm">
+                      {Math.round(item.gst)}
+                    </td>
+                    <td className="border border-gray-400 text-center text-sm">
+                      {formatDate(item.delivery_date || '')}
+                    </td>
+                    <td className="border border-gray-400  px-2 text-sm">
+                      {item.delivery_mode || ''}
+                    </td>
                   </tr>
                 ))
               )}
@@ -1159,7 +1163,7 @@ const OrderReportPage = () => {
         </div>
 
         <div className="h-[7vh] flex border-t items-center">
-          <div className="w-[410px] px-0.5">
+          <div className="w-[370px] px-0.5">
             <div className="relative mb-1 ml-1 flex gap-2">
               <textarea
                 name="remarks"
@@ -1192,35 +1196,41 @@ const OrderReportPage = () => {
           <div className="">
             <p className="font-medium pr-2">Total</p>
           </div>
-          <div className="w-[1000px] px-0.5 py-1">
+          <div className="w-[640px] px-0.5 py-1">
             <table className="w-full border-b mb-1">
               <tfoot>
                 <tr className="*:border-[#932F67]">
-                  <td className="text-right border w-10 px-1">
+                  <td className="text-right border w-5 px-1">
                     {formatQuantityForDisplay(totals.qty)}
                   </td>
-                  {!isViewOnlyReport && (
+                  {/* {!isViewOnlyReport && (
                     <>
-                      <td className="w-10 border"></td>
+                      
                     </>
-                  )}
+                  )} */}
 
-                  <td className="text-right border w-16 px-1">{formatCurrency(totals.amount)}</td>
+                  {/* <td className="w-10 border"></td> */}
 
-                  {!isViewOnlyReport && (
-                    <>
-                      <td className="text-right border w-32 px-1"></td>
+                  <td className="text-right border w-12 px-1">{formatCurrency(totals.amount)}</td>
 
-                      <td className="text-right border w-28 px-1">
-                        {formatCurrency(totals.grossAmt)}
-                      </td>
-                    </>
-                  )}
+                  
+
+                  {/* <td className="text-right border w-32 px-1"></td> */}
+
+                  <td className="text-right border w-28 px-1">{formatCurrency(totals.grossAmt)}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
-          <div className="flex w-44 justify-end pr-1 pb-1">
+          {/* {!isViewOnlyReport && (
+                    <>
+                      <div className='flex'>
+                        <button className='px-3 py-1 rounded-xl bg-yellow-300'>Reject</button>
+                        <button className='px-3 py-1 rounded-xl bg-violet-400 ml-1'>Approve</button>
+                      </div>
+                    </>
+                  )} */}
+          <div className="flex w-72 justify-end pr-1 pb-1">
             {/* Show Update button when editing existing order, Save for new orders */}
             {selectedOrderData ? (
               <button

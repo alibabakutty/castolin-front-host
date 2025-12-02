@@ -32,7 +32,7 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
           {/* Admin Routes */}
           <Route path='/admin' element={
-            <ProtectedRoutes roles={['admin']} >
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']} >
               <AdminDashboard />
             </ProtectedRoutes>
           } />
@@ -41,78 +41,78 @@ function App() {
             path="/distributor"
             element={
             <ProtectedRoutes 
-            roles={['admin', 'distributor']}
+            roles={['admin', 'distributor', 'direct']}
             >
               <DistributorDashboard />
             </ProtectedRoutes>}
           />
           {/* Corporate routes */}
           <Route path='/corporate' element={
-            <ProtectedRoutes roles={['admin', 'direct']}>
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
               <CorporateDashboard />
             </ProtectedRoutes>
           } />
           {/* Master Page Routes */}
           <Route path='/inventory-master' element={
-            <ProtectedRoutes roles={['admin']}>
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
               <StockItemMaster />
             </ProtectedRoutes>
           } />
           <Route path='/customer-master' element={
-            <ProtectedRoutes roles={['admin']}>
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
               <CustomerMaster />
             </ProtectedRoutes>
           } />
           <Route path='/distributor-master' element={
-            <ProtectedRoutes roles={['admin']}>
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
               <DistributorMaster />
             </ProtectedRoutes>
           } />
           <Route path='/corporate-master' element={
-            <ProtectedRoutes roles={['admin']}>
+            <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
               <CorporateMaster />
             </ProtectedRoutes>
           } />
         {/* For fetch for view */}
         <Route path='/fetch-view-master/:type' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <ViewFetchMaster />
           </ProtectedRoutes>
         } />
            {/* For View */}
         <Route path='/inventory-view/:id' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <StockItemMaster />
           </ProtectedRoutes>
         } />
         <Route path='/customer-view/:id' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <CustomerMaster />
           </ProtectedRoutes>
         } />
         <Route path='/distributor-view/:customer_code' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <DistributorMaster />
           </ProtectedRoutes>
         } />
         <Route path='/corporate-view/:customer_code' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <CorporateMaster />
           </ProtectedRoutes>
         } />
         {/* For Alter Master route */}
         <Route path='/inventory-alter' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <StockItemMaster />
           </ProtectedRoutes>
         } />
         <Route path='/customer-alter' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <CustomerMaster />
           </ProtectedRoutes>
         } />
         <Route path='/distributor-alter/:usercode' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <DistributorMaster />
           </ProtectedRoutes>
         } />
@@ -124,19 +124,19 @@ function App() {
         } /> */}
         {/* For fetch report page */}
         <Route path='/fetch-report' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <ViewFetchReport />
           </ProtectedRoutes>
         } />
         {/* for Pending fetch report page */}
         <Route path='/fetch-pending-report' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <ViewPendingFetchReport />
           </ProtectedRoutes>
          } />
         {/* Fetch itemwise report page */}
         <Route path='/fetch-item-report' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <ViewItemFetchReport />
           </ProtectedRoutes>
         } />
@@ -154,19 +154,19 @@ function App() {
         } />
         {/* Approved order report */}
         <Route path='/order-report-approved/:orderNumber' element={
-          <ProtectedRoutes roles={['admin']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <OrderReportPage />
           </ProtectedRoutes>
         } />
         {/* Corporate order report */}
         <Route path='/order-report-corporate/:orderNumber' element={
-          <ProtectedRoutes roles={['admin', 'direct']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <OrderReportPage />
           </ProtectedRoutes>
         } />
         {/* Distributor order report */}
         <Route path='/order-report-distributor/:orderNumber' element={
-          <ProtectedRoutes roles={['admin', 'distributor']}>
+          <ProtectedRoutes roles={['admin', 'distributor', 'direct']}>
             <OrderReportPage />
           </ProtectedRoutes>
         } />
