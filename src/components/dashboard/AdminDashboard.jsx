@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { logout } from '../../auth/auth';
 import CDAPage from '../CDAPage';
-import ViewFetchReport from '../reports-page/ViewFetchReport';
-import ViewItemFetchReport from '../reports-page/ViewItemFetchReport';
-import ViewPendingFetchReport from '../reports-page/ViewPendingFetchReport';
 import { useAuth } from '../../context/authConstants';
 
 const AdminDashboard = () => {
@@ -55,13 +52,7 @@ const AdminDashboard = () => {
   };
 
   // Show only CorporateOrder page
-  if (currentPage === 'fetch-order-pending') {
-    return <ViewPendingFetchReport onBack={() => setCurrentPage('dashboard')} />;
-  } else if (currentPage === '/fetch-report') {
-    return <ViewFetchReport onBack={() => setCurrentPage('dashboard')} />;
-  } else if (currentPage === '/fetch-item-report') {
-    return <ViewItemFetchReport onBack={() => setCurrentPage('dashboard')} />;
-  } else if (currentPage === 'cda-page') {
+  if (currentPage === 'cda-page') {
     return (
       <CDAPage
         onBack={() => {
