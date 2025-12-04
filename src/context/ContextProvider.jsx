@@ -26,8 +26,6 @@ const ContextProvider = ({ children }) => {
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();
         let userData = null;
-        let role = null;
-        let distributorData = null;
 
         try {
           // Use only /me-admin endpoint
@@ -37,12 +35,7 @@ const ContextProvider = ({ children }) => {
 
           if (res.data && res.data[0]) {
             userData = res.data[0];
-            role = userData.role;
 
-            // Set distributor data based on user role
-            if (userData.role === 'distributor' || userData.role === 'direct') {
-              distributorData = userData;
-            }
           }
 
           // Set user and role states
