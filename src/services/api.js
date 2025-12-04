@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Use environment variable for API URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  'https://castolin-backend-host.vercel.app';
+const API_BASE_URL = 'https://castolin-backend-host.vercel.app';
 
 const api = axios.create({
     baseURL: API_BASE_URL,  // ✅ Uses your Vercel backend
