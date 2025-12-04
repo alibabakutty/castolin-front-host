@@ -29,7 +29,7 @@ const ContextProvider = ({ children }) => {
 
         try {
           // Use only /me-admin endpoint
-          const res = await api.get('/me-admin', {
+          const res = await api.get('/api/me-admin', {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -71,7 +71,7 @@ const ContextProvider = ({ children }) => {
       const token = await firebaseUser.getIdToken();
 
       // Use only /me-admin endpoint
-      const res = await api.get('/me-admin', {
+      const res = await api.get('/api/me-admin', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
