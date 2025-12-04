@@ -1,13 +1,24 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';  // Add this
 
 const MainPage = () => {
   const navigate = useNavigate();
 
+  // ✅ Correct: Use useEffect for API calls
+  useEffect(() => {
+    // This runs once when component mounts
+    console.log('Current API URL:', import.meta.env.VITE_API_URL);
+    
+    // Test backend connection
+    fetch('https://castolin-backend-host.vercel.app/api/health')
+      .then(res => res.json())
+      .then(data => console.log('Backend response:', data))
+      .catch(err => console.error('Error:', err));
+  }, []); // Empty dependency array = runs once on mount
+
   const handleAdminLogin = () => {
     navigate('/admin-login');
   };
-
-  console.log('Current API URL:', import.meta.env.VITE_API_URL);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6 font-amasis">
