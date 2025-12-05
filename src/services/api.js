@@ -10,9 +10,6 @@ const api = axios.create({
     },
 });
 
-console.log('Current API URL:', import.meta.env.VITE_API_URL);
-// Should show: https://castolin-backend-host.vercel.app
-
 // Add request interceptor for debugging
 api.interceptors.request.use(
     config => {
